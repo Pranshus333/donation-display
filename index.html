@@ -90,13 +90,14 @@
       border-radius: 15px;
     }
 
-    /* --- Logo Display (Center Circle) --- */
+    /* --- Logo Display (CENTER SQUARE CONTAINER) --- */
     #logo-container {
       width: 200px;
       height: 200px;
       background: var(--white);
       border: 5px solid var(--osu-scarlet);
-      border-radius: 50%; /* This makes the container circular */
+      /* REMOVED border-radius: 50% for square shape */
+      border-radius: 10px; /* Added slight rounding for a cleaner look */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -104,32 +105,27 @@
       padding: 15px;
       box-sizing: border-box;
       margin-bottom: 20px;
-      /* KEPT THIS: Hides anything outside the rounded border */
       overflow: hidden; 
     }
 
     #logo-placeholder {
-        /* Ensured the placeholder itself fills the space */
         width: 100%;
         height: 100%;
-        display: flex; /* Helps center the image */
+        display: flex; 
         align-items: center;
         justify-content: center;
     }
 
     #logo-placeholder img {
-      /* NEW/REVISED CHANGES BELOW */
-      width: 100%; /* Image fills 100% of the placeholder width */
-      height: 100%; /* Image fills 100% of the placeholder height */
-      object-fit: contain; /* Changed back to CONTAIN to see the full image, but kept overflow:hidden for clipping */
-      border-radius: 50%; /* This forces the image corners to follow the circle */
-      
-      /* Important: The image must be square (or nearly square) for the 50% border-radius to work well. */
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Ensures the whole image is visible within the square */
+      /* REMOVED border-radius: 50% */
     }
 
-    /* --- Corner Logos (Removed from HTML, but CSS left for cleanliness) --- */
+    /* --- Corner Logos (Hidden) --- */
     #corner-images {
-        display: none; /* Hide the entire corner images container */
+        display: none; 
     }
 
     /* --- Donation Amount --- */
@@ -187,7 +183,7 @@
   <canvas id="confetti-canvas"></canvas>
 
   <script>
-    // --- Existing API and Logic (Unchanged for functionality) ---
+    // --- Existing API and Logic (Unchanged) ---
     const API_URL = "https://events.dancemarathon.com/api/events/6631/donations?limit=10";
     let lastDonationId = null;
     let isFirstLoad = true;
