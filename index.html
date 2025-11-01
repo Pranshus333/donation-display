@@ -57,10 +57,14 @@
       position: absolute;
       /* Using a text character for a leaf shape. Can be replaced with an image if needed. */
       font-size: 2.5rem; 
-      color: var(--osu-gray); 
-      opacity: 0.2;
+      
+      /* --- VISIBILITY CHANGES START HERE --- */
+      color: var(--white); /* Changed to White */
+      opacity: 0.5; /* Increased opacity */
+      text-shadow: 0 0 5px var(--osu-scarlet), 0 0 10px rgba(0, 0, 0, 0.5); /* Added a scarlet/black glow */
+      /* --- VISIBILITY CHANGES END HERE --- */
+      
       animation: float 25s infinite linear; 
-      text-shadow: 0 0 5px var(--black);
     }
     
     /* Individual leaf animations for variety */
@@ -72,8 +76,8 @@
 
     @keyframes float {
       0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
-      10% { opacity: 0.2; }
-      90% { opacity: 0.2; }
+      10% { opacity: 0.5; }
+      90% { opacity: 0.5; }
       100% { transform: translateY(105vh) rotate(720deg) translateX(50px); opacity: 0; }
     }
 
@@ -90,13 +94,13 @@
       border-radius: 15px;
     }
 
-    /* --- Logo Display (Center Circle) --- */
+    /* --- Logo Display (CENTER SQUARE CONTAINER) --- */
     #logo-container {
       width: 200px;
       height: 200px;
       background: var(--white);
       border: 5px solid var(--osu-scarlet);
-      border-radius: 50%; /* This makes the container circular */
+      border-radius: 10px; /* Square with slight rounding */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -104,19 +108,26 @@
       padding: 15px;
       box-sizing: border-box;
       margin-bottom: 20px;
-      overflow: hidden; /* THIS IS THE KEY: Hides anything outside the rounded border */
+      overflow: hidden; 
+    }
+
+    #logo-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex; 
+        align-items: center;
+        justify-content: center;
     }
 
     #logo-placeholder img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: cover; /* THIS IS THE KEY: Crops the image to fill the space */
-      border-radius: 50%; /* Also apply border-radius to the image itself */
+      width: 100%;
+      height: 100%;
+      object-fit: contain; 
     }
 
-    /* --- Corner Logos (Removed from HTML, but CSS left for cleanliness) --- */
+    /* --- Corner Logos (Hidden) --- */
     #corner-images {
-        display: none; /* Hide the entire corner images container */
+        display: none; 
     }
 
     /* --- Donation Amount --- */
@@ -174,7 +185,7 @@
   <canvas id="confetti-canvas"></canvas>
 
   <script>
-    // --- Existing API and Logic (Unchanged for functionality) ---
+    // --- Existing API and Logic (Unchanged) ---
     const API_URL = "https://events.dancemarathon.com/api/events/6631/donations?limit=10";
     let lastDonationId = null;
     let isFirstLoad = true;
@@ -238,7 +249,7 @@
 
         const newestDonation = donations[0];
         const currentDonationId = newestDonation.donationID;
-        const donorName = newestDonation.displayName || 'Anonymous';
+        const donorName = newestDonestoreation.displayName || 'Anonymous';
         const amount = newestDonation.amount;
         
         log(`Latest: ${amount} from ${donorName}`);
