@@ -96,7 +96,7 @@
       height: 200px;
       background: var(--white);
       border: 5px solid var(--osu-scarlet);
-      border-radius: 50%;
+      border-radius: 50%; /* This makes the container circular */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -104,12 +104,14 @@
       padding: 15px;
       box-sizing: border-box;
       margin-bottom: 20px;
+      overflow: hidden; /* THIS IS THE KEY: Hides anything outside the rounded border */
     }
 
     #logo-placeholder img {
       max-width: 100%;
       max-height: 100%;
-      object-fit: contain;
+      object-fit: cover; /* THIS IS THE KEY: Crops the image to fill the space */
+      border-radius: 50%; /* Also apply border-radius to the image itself */
     }
 
     /* --- Corner Logos (Removed from HTML, but CSS left for cleanliness) --- */
@@ -160,7 +162,7 @@
   <div id="container">
     <div id="logo-container">
       <div id="logo-placeholder">
-        <img src="./buckeyethon_logo.jpg" alt="BuckeyeThon Main Logo">
+        <img src="./buckeyethon_logo.png" alt="BuckeyeThon Main Logo">
         </div>
     </div>
     
