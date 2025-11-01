@@ -90,14 +90,13 @@
       border-radius: 15px;
     }
 
-    /* --- Logo Display (CENTER SQUARE CONTAINER) --- */
+    /* --- Logo Display (Center Circle) --- */
     #logo-container {
       width: 200px;
       height: 200px;
       background: var(--white);
       border: 5px solid var(--osu-scarlet);
-      /* REMOVED border-radius: 50% for square shape */
-      border-radius: 10px; /* Added slight rounding for a cleaner look */
+      border-radius: 50%; /* This makes the container circular */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -105,27 +104,19 @@
       padding: 15px;
       box-sizing: border-box;
       margin-bottom: 20px;
-      overflow: hidden; 
-    }
-
-    #logo-placeholder {
-        width: 100%;
-        height: 100%;
-        display: flex; 
-        align-items: center;
-        justify-content: center;
+      overflow: hidden; /* THIS IS THE KEY: Hides anything outside the rounded border */
     }
 
     #logo-placeholder img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain; /* Ensures the whole image is visible within the square */
-      /* REMOVED border-radius: 50% */
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: cover; /* THIS IS THE KEY: Crops the image to fill the space */
+      border-radius: 50%; /* Also apply border-radius to the image itself */
     }
 
-    /* --- Corner Logos (Hidden) --- */
+    /* --- Corner Logos (Removed from HTML, but CSS left for cleanliness) --- */
     #corner-images {
-        display: none; 
+        display: none; /* Hide the entire corner images container */
     }
 
     /* --- Donation Amount --- */
@@ -171,7 +162,7 @@
   <div id="container">
     <div id="logo-container">
       <div id="logo-placeholder">
-        <img src="./buckeyethon_logo.png" alt="BuckeyeThon Main Logo">
+        <img src="./buckeyethon_logo.jpg" alt="BuckeyeThon Main Logo">
         </div>
     </div>
     
@@ -183,7 +174,7 @@
   <canvas id="confetti-canvas"></canvas>
 
   <script>
-    // --- Existing API and Logic (Unchanged) ---
+    // --- Existing API and Logic (Unchanged for functionality) ---
     const API_URL = "https://events.dancemarathon.com/api/events/6631/donations?limit=10";
     let lastDonationId = null;
     let isFirstLoad = true;
