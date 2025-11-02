@@ -55,14 +55,10 @@
 
     .buckeye-leaf {
       position: absolute;
-      /* Now using the dollar sign character */
       font-size: 2.5rem; 
-      
-      /* VISIBILITY SETTINGS FROM LAST STEP */
       color: var(--white); 
       opacity: 0.5; 
       text-shadow: 0 0 5px var(--osu-scarlet), 0 0 10px rgba(0, 0, 0, 0.5); 
-      
       animation: float 25s infinite linear; 
     }
     
@@ -124,14 +120,19 @@
       object-fit: contain; 
     }
 
-    /* --- Corner Logos (Hidden) --- */
-    #corner-images {
-        display: none; 
+    /* --- Donor Name Display --- */
+    #donor-name {
+      font-size: 3.5vw; /* Adjusted for visibility */
+      font-weight: 700;
+      color: var(--white);
+      text-shadow: 0 0 10px var(--osu-scarlet);
+      letter-spacing: 0.05em;
+      min-height: 1em; /* Ensures element doesn't collapse on load */
     }
 
     /* --- Donation Amount --- */
     #amount {
-      font-size: 12vw;
+      font-size: 8vw; /* Reduced font size slightly to fit donor name above */
       font-weight: 700;
       color: var(--white);
       text-shadow: 0 0 20px var(--osu-scarlet), 0 0 10px var(--black);
@@ -177,6 +178,8 @@
     </div>
     
     <div id="tagline" style="display:none;"></div>
+    
+    <div id="donor-name">Watching for Donations...</div>
 
     <div id="amount">$0.00</div>
   </div>
@@ -248,7 +251,7 @@
 
         const newestDonation = donations[0];
         const currentDonationId = newestDonation.donationID;
-        const donorName = newestDonation.displayName || 'Anonymous';
+        const donorName = newestDonation.displayName || 'Anonymous Donor'; // Adjusted fallback name
         const amount = newestDonation.amount;
         
         log(`Latest: ${amount} from ${donorName}`);
@@ -263,7 +266,8 @@
         if (currentDonationId !== lastDonationId) {
           log(`NEW DONATION! ${amount} from ${donorName}`);
           lastDonationId = currentDonationId;
-          showDonation(amount);
+          // PASSING donorName to showDonation
+          showDonation(amount, donorName); 
         }
 
       } catch (err) {
@@ -279,9 +283,15 @@
       }
     }
 
-    function showDonation(amount) {
+    // UPDATED FUNCTION: Now accepts donorName
+    function showDonation(amount, donorName) {
       const amountEl = document.getElementById("amount");
+      const donorEl = document.getElementById("donor-name");
 
+      // Update donor name
+      donorEl.textContent = `${donorName} donated:`;
+
+      // Update amount
       amountEl.textContent = `$${amount.toFixed(2)}`;
       amountEl.classList.add("highlight"); 
       
