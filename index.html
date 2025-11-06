@@ -8,22 +8,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
   
   <style>
-    /* OSU Theme Colors */
-    :root {
-      --osu-scarlet: #bb0000;
-      --osu-gray: #666666;
-      --white: #ffffff;
-      --black: #000000;
-      --font-main: 'Oswald', sans-serif; /* A strong, bold font */
-    }
+    /* CORE STYLING - Hardcoded colors for stability */
 
-    /* NOTE: We removed the background and font-family from the body rule below,
-        as they are now set inline on the <body> tag for reliability. */
     body {
-      /* The rest of the styling remains to center content */
+      /* Background and font-family set inline on <body> tag */
       background-size: 400% 400%;
       animation: gradientShift 15s ease infinite;
-      color: var(--white);
+      color: #ffffff; /* White */
       text-align: center;
       display: flex;
       justify-content: center;
@@ -42,41 +33,7 @@
       100% { background-position: 0% 50%; }
     }
 
-    /* --- Floating Dollar Signs --- */
-    #floating-elements {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .buckeye-leaf {
-      position: absolute;
-      font-size: 2.5rem; 
-      color: var(--white); 
-      opacity: 0.5; 
-      text-shadow: 0 0 5px var(--osu-scarlet), 0 0 10px rgba(0, 0, 0, 0.5); 
-      animation: float 25s infinite linear; 
-    }
-    
-    /* Individual element animations for variety */
-    .leaf-1 { left: 10%; top: -10%; animation-duration: 25s; animation-delay: 0s; transform: scale(1.2); }
-    .leaf-2 { left: 80%; top: -20%; animation-duration: 30s; animation-delay: 5s; transform: scale(0.8); }
-    .leaf-3 { left: 30%; top: -5%; animation-duration: 20s; animation-delay: 10s; transform: scale(1.5); }
-    .leaf-4 { left: 55%; top: -15%; animation-duration: 35s; animation-delay: 15s; transform: scale(1.0); }
-    .leaf-5 { left: 5%; top: -30%; animation-duration: 22s; animation-delay: 8s; transform: scale(1.3); }
-
-    @keyframes float {
-      0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
-      10% { opacity: 0.5; }
-      90% { opacity: 0.5; }
-      100% { transform: translateY(105vh) rotate(720deg) translateX(50px); opacity: 0; }
-    }
-
-    /* --- Main Content --- */
+    /* --- Main Content Container --- */
     #container {
       position: relative;
       z-index: 10;
@@ -89,17 +46,17 @@
       border-radius: 15px;
     }
 
-    /* --- Logo Display (CENTER SQUARE CONTAINER) --- */
+    /* --- Logo Display --- */
     #logo-container {
       width: 200px;
       height: 200px;
-      background: var(--white);
-      border: 5px solid var(--osu-scarlet);
-      border-radius: 10px; /* Square with slight rounding */
+      background: #ffffff; /* White */
+      border: 5px solid #bb0000; /* OSU Scarlet */
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 0 10px var(--osu-scarlet);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 0 10px #bb0000;
       padding: 15px;
       box-sizing: border-box;
       margin-bottom: 20px;
@@ -120,22 +77,22 @@
       object-fit: contain; 
     }
 
-    /* --- Donor Name Display (Now Recipient Name) --- */
+    /* --- Donor Name Display --- */
     #donor-name {
-      font-size: 3.5vw; /* Adjusted for visibility */
+      font-size: 3.5vw;
       font-weight: 700;
-      color: var(--white);
-      text-shadow: 0 0 10px var(--osu-scarlet);
+      color: #ffffff; /* White */
+      text-shadow: 0 0 10px #bb0000; /* OSU Scarlet */
       letter-spacing: 0.05em;
-      min-height: 1em; /* Ensures element doesn't collapse on load */
+      min-height: 1em;
     }
 
     /* --- Donation Amount --- */
     #amount {
-      font-size: 8vw; /* Reduced font size slightly to fit donor name above */
+      font-size: 8vw;
       font-weight: 700;
-      color: var(--white);
-      text-shadow: 0 0 20px var(--osu-scarlet), 0 0 10px var(--black);
+      color: #ffffff; /* White */
+      text-shadow: 0 0 20px #bb0000, 0 0 10px #000000; /* Scarlet, Black */
       transition: transform 0.2s ease-out;
       letter-spacing: 0.08em;
       line-height: 1;
@@ -159,15 +116,7 @@
 </head>
 <body style="background: linear-gradient(135deg, #bb0000 0%, #800000 50%, #666666 100%); font-family: 'Oswald', sans-serif;">
   
-  <div id="floating-elements">
-    <div class="buckeye-leaf leaf-1">$</div>
-    <div class="buckeye-leaf leaf-2">$</div>
-    <div class="buckeye-leaf leaf-3">$</div>
-    <div class="buckeye-leaf leaf-4">$</div>
-    <div class="buckeye-leaf leaf-5">$</div>
-  </div>
-
-  <div id="corner-images">
+    <div id="corner-images">
     </div>
 
   <div id="container">
@@ -189,7 +138,7 @@
   <script>
     // --- Tracking the latest time instead of ID for robust multi-donation handling ---
     const API_URL = "https://events.dancemarathon.com/api/events/6631/donations?limit=10";
-    let lastDonationTime = null; // **Tracking time for robustness**
+    let lastDonationTime = null; 
     let isFirstLoad = true;
     // **SAFE INTERVAL:** Set a 2-minute default to prevent overuse of hosting resources
     let checkInterval = 120000; 
@@ -252,11 +201,10 @@
           return;
         }
 
-        // --- MULTI-DONATION LOGIC ---
+        // --- MULTI-DONATION LOGIC (Unchanged) ---
         let newDonations = [];
         let newestTime = lastDonationTime;
 
-        // 1. Iterate backward to process oldest-newest donations in order
         for (let i = donations.length - 1; i >= 0; i--) {
             const donation = donations[i];
             const donationTime = new Date(donation.createdDateUTC).getTime();
@@ -270,7 +218,6 @@
             }
         }
         
-        // 2. Handle first load and bail
         if (isFirstLoad) {
             lastDonationTime = newestTime;
             isFirstLoad = false;
@@ -278,7 +225,6 @@
             return;
         }
         
-        // 3. Process all new donations found
         if (newDonations.length > 0) {
             log(`Found ${newDonations.length} NEW DONATION(S)!`);
 
@@ -289,10 +235,9 @@
                 setTimeout(() => {
                     log(`ALERT: ${amount} for ${recipientName}`);
                     showDonation(amount, recipientName); 
-                }, index * 3000); // 3-second delay between alerts
+                }, index * 3000);
             });
             
-            // 4. Update the tracker time
             lastDonationTime = newestTime;
         }
       } catch (err) {
@@ -325,7 +270,7 @@
       setTimeout(stopConfetti, 5000);
     }
 
-    // --- Confetti Animation (Unchanged) ---
+    // --- Confetti Animation ---
     const canvas = document.getElementById("confetti-canvas");
     const ctx = canvas.getContext("2d");
     let confetti = [];
@@ -370,7 +315,7 @@
       });
       updateConfetti();
     }
-
+    
     function updateConfetti() {
       for (let i = 0; i < confetti.length; i++) {
         const c = confetti[i];
@@ -390,7 +335,7 @@
     }
 
     function randomColor() {
-      // BuckeyeThon's colors: Scarlet, White, Gray/Black
+      // BuckeyeThon's colors: Scarlet (#bb0000), White (#ffffff), Gray/Black (#666666)
       const colors = ["#bb0000", "#ffffff", "#666666"]; 
       return colors[Math.floor(Math.random() * colors.length)];
     }
@@ -399,11 +344,11 @@
     log("Starting donation monitor...");
     log(`Checking every ${checkInterval/1000} seconds`);
 
-    // **FINAL CHANGE: Add 5-second delay to avoid rate limiting on deployment**
+    // Add 5-second delay to avoid rate limiting on deployment
     setTimeout(() => {
         checkForNewDonation();
         intervalId = setInterval(checkForNewDonation, checkInterval);
-    }, 5000); // Wait 5 seconds before the first check
+    }, 5000); 
   </script>
 </body>
 </html>
