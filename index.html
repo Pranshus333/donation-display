@@ -251,12 +251,10 @@
 
         const newestDonation = donations[0];
         const currentDonationId = newestDonation.donationID;
-        
-        // *** CHANGE 1: Pulling the recipientName from the API object ***
-        const recipientName = newestDonation.recipientName || 'A BuckeyeThon Participant';
+        const donorName = newestDonation.displayName || 'Anonymous Donor'; // Adjusted fallback name
         const amount = newestDonation.amount;
         
-        log(`Latest: ${amount} for ${recipientName}`); // Updated log message
+        log(`Latest: ${amount} from ${donorName}`);
         
         if (isFirstLoad) {
           lastDonationId = currentDonationId;
@@ -266,10 +264,10 @@
         }
 
         if (currentDonationId !== lastDonationId) {
-          log(`NEW DONATION! ${amount} for ${recipientName}`);
+          log(`NEW DONATION! ${amount} from ${donorName}`);
           lastDonationId = currentDonationId;
-          // *** CHANGE 2: Pass recipientName to showDonation ***
-          showDonation(amount, recipientName); 
+          // PASSING donorName to showDonation
+          showDonation(amount, donorName); 
         }
 
       } catch (err) {
@@ -285,13 +283,13 @@
       }
     }
 
-    // *** CHANGE 3: Update function signature and display text ***
-    function showDonation(amount, recipientName) {
+    // UPDATED FUNCTION: Now accepts donorName
+    function showDonation(amount, donorName) {
       const amountEl = document.getElementById("amount");
       const donorEl = document.getElementById("donor-name");
 
-      // Update to display WHO GOT the donation
-      donorEl.textContent = `For ${recipientName}:`;
+      // Update donor name
+      donorEl.textContent = `${donorName} received:`;
 
       // Update amount
       amountEl.textContent = `$${amount.toFixed(2)}`;
