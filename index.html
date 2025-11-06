@@ -187,9 +187,9 @@
   <canvas id="confetti-canvas"></canvas>
 
   <script>
-    // --- Existing API and Logic (Unchanged) ---
+    // --- Tracking the latest time instead of ID ---
     const API_URL = "https://events.dancemarathon.com/api/events/6631/donations?limit=10";
-    let lastDonationId = null;
+    let lastDonationTime = null; // **CHANGED: Now tracking time**
     let isFirstLoad = true;
     let checkInterval = 30000;
     let intervalId = null;
@@ -249,28 +249,54 @@
           return;
         }
 
-        const newestDonation = donations[0];
-        const currentDonationId = newestDonation.donationID;
-        
-        // *** CHANGE 1: Pulling the recipientName from the API object ***
-        const recipientName = newestDonation.recipientName || 'A BuckeyeThon Participant';
-        const amount = newestDonation.amount;
-        
-        log(`Latest: ${amount} for ${recipientName}`); // Updated log message
-        
-        if (isFirstLoad) {
-          lastDonationId = currentDonationId;
-          isFirstLoad = false;
-          log("Initialized - watching for new donations");
-          return;
-        }
+        // --- NEW MULTI-DONATION LOGIC ---
+        let newDonations = [];
+        let newestTime = lastDonationTime;
 
-        if (currentDonationId !== lastDonationId) {
-          log(`NEW DONATION! ${amount} for ${recipientName}`);
-          lastDonationId = currentDonationId;
-          // *** CHANGE 2: Pass recipientName to showDonation ***
-          showDonation(amount, recipientName); 
+        // Iterate backward to process oldest-newest donations in order
+        for (let i = donations.length - 1; i >= 0; i--) {
+            const donation = donations[i];
+            // Convert the UTC string to a number (milliseconds since epoch)
+            const donationTime = new Date(donation.createdDateUTC).getTime();
+           
+            // Check if this donation is strictly newer than the last one we processed
+            if (!lastDonationTime || donationTime > lastDonationTime) {
+                newDonations.push(donation);
+            }
+           
+            // Always track the newest time found in the current response
+            if (!newestTime || donationTime > newestTime) {
+                newestTime = donationTime;
+            }
         }
+        
+        if (isFirstLoad) {
+            lastDonationTime = newestTime;
+            isFirstLoad = false;
+            log("Initialized - watching for new donations");
+            return;
+        }
+        
+        // Process all new donations found
+        if (newDonations.length > 0) {
+            log(`Found ${newDonations.length} NEW DONATION(S)!`);
+
+            // Use a short delay between alerts for multiple simultaneous donations
+            newDonations.forEach((donation, index) => {
+                // Recipient display logic carried over from previous change
+                const recipientName = donation.recipientName || 'A BuckeyeThon Participant';
+                const amount = donation.amount;
+                
+                setTimeout(() => {
+                    log(`ALERT: ${amount} for ${recipientName}`);
+                    showDonation(amount, recipientName); 
+                }, index * 3000); // 3-second delay ensures each donation gets a full screen moment
+            });
+            
+            // Update the tracker time
+            lastDonationTime = newestTime;
+        }
+        // --- END NEW LOGIC ---
 
       } catch (err) {
         failedAttempts++;
@@ -285,7 +311,7 @@
       }
     }
 
-    // *** CHANGE 3: Update function signature and display text ***
+    // Function to display a donation (Recipient display logic is retained)
     function showDonation(amount, recipientName) {
       const amountEl = document.getElementById("amount");
       const donorEl = document.getElementById("donor-name");
@@ -305,7 +331,7 @@
       setTimeout(stopConfetti, 5000);
     }
 
-    // --- Confetti Animation ---
+    // --- Confetti Animation (Unchanged) ---
     const canvas = document.getElementById("confetti-canvas");
     const ctx = canvas.getContext("2d");
     let confetti = [];
