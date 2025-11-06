@@ -120,7 +120,7 @@
       object-fit: contain; 
     }
 
-    /* --- Donor Name Display (Now Recipient Name) --- */
+    /* --- Donor Name Display --- */
     #donor-name {
       font-size: 3.5vw; /* Adjusted for visibility */
       font-weight: 700;
@@ -187,11 +187,11 @@
   <canvas id="confetti-canvas"></canvas>
 
   <script>
-    // --- Tracking the latest time instead of ID for robust multi-donation handling ---
+    // --- Existing API and Logic (Unchanged) ---
     const API_URL = "https://events.dancemarathon.com/api/events/6631/donations?limit=10";
-    let lastDonationTime = null; // **CHANGED: Now tracking time**
+    let lastDonationId = null;
     let isFirstLoad = true;
-    let checkInterval = 1200000;
+    let checkInterval = 30000;
     let intervalId = null;
     let isRateLimited = false;
     let failedAttempts = 0;
@@ -226,7 +226,7 @@
             if (!isRateLimited) {
               isRateLimited = true;
               log("Rate limited - slowing down");
-              setCheckInterval(120000); // Wait 2 minutes if rate limited
+              setCheckInterval(30000);
             }
             return;
           }
@@ -237,7 +237,7 @@
         if (isRateLimited) {
           isRateLimited = false;
           log("Rate limit cleared");
-          setCheckInterval(30000); // Reset to base 30 seconds
+          setCheckInterval(30000);
         }
         
         failedAttempts = 0;
@@ -249,55 +249,28 @@
           return;
         }
 
-        // --- MULTI-DONATION LOGIC ---
-        let newDonations = [];
-        let newestTime = lastDonationTime;
-
-        // 1. Iterate backward to process oldest-newest donations in order
-        for (let i = donations.length - 1; i >= 0; i--) {
-            const donation = donations[i];
-            // Convert the UTC string to a number (milliseconds since epoch)
-            const donationTime = new Date(donation.createdDateUTC).getTime();
-           
-            // Check if this donation is strictly newer than the last one we processed
-            if (!lastDonationTime || donationTime > lastDonationTime) {
-                newDonations.push(donation);
-            }
-           
-            // Always track the newest time found in the current response
-            if (!newestTime || donationTime > newestTime) {
-                newestTime = donationTime;
-            }
-        }
+        const newestDonation = donations[0];
+        const currentDonationId = newestDonation.donationID;
         
-        // 2. Handle first load and bail
+        // *** CHANGE 1: Pulling the recipientName from the API object ***
+        const recipientName = newestDonation.recipientName || 'A BuckeyeThon Participant';
+        const amount = newestDonation.amount;
+        
+        log(`Latest: ${amount} for ${recipientName}`); // Updated log message
+        
         if (isFirstLoad) {
-            lastDonationTime = newestTime;
-            isFirstLoad = false;
-            log("Initialized - watching for new donations");
-            return;
+          lastDonationId = currentDonationId;
+          isFirstLoad = false;
+          log("Initialized - watching for new donations");
+          return;
         }
-        
-        // 3. Process all new donations found
-        if (newDonations.length > 0) {
-            log(`Found ${newDonations.length} NEW DONATION(S)!`);
 
-            // Use a short delay between alerts for multiple simultaneous donations
-            newDonations.forEach((donation, index) => {
-                // Recipient display logic
-                const recipientName = donation.recipientName || 'A BuckeyeThon Participant';
-                const amount = donation.amount;
-                
-                setTimeout(() => {
-                    log(`ALERT: ${amount} for ${recipientName}`);
-                    showDonation(amount, recipientName); 
-                }, index * 3000); // 3-second delay ensures each donation gets a full screen moment
-            });
-            
-            // 4. Update the tracker time only after all new donations have been handled
-            lastDonationTime = newestTime;
+        if (currentDonationId !== lastDonationId) {
+          log(`NEW DONATION! ${amount} for ${recipientName}`);
+          lastDonationId = currentDonationId;
+          // *** CHANGE 2: Pass recipientName to showDonation ***
+          showDonation(amount, recipientName); 
         }
-        // --- END NEW LOGIC ---
 
       } catch (err) {
         failedAttempts++;
@@ -312,7 +285,7 @@
       }
     }
 
-    // Function to display a donation
+    // *** CHANGE 3: Update function signature and display text ***
     function showDonation(amount, recipientName) {
       const amountEl = document.getElementById("amount");
       const donorEl = document.getElementById("donor-name");
@@ -332,7 +305,7 @@
       setTimeout(stopConfetti, 5000);
     }
 
-    // --- Confetti Animation (Unchanged) ---
+    // --- Confetti Animation ---
     const canvas = document.getElementById("confetti-canvas");
     const ctx = canvas.getContext("2d");
     let confetti = [];
@@ -405,12 +378,8 @@
     // Initialize
     log("Starting donation monitor...");
     log(`Checking every ${checkInterval/1000} seconds`);
-
-    // **FINAL CHANGE: Add 5-second delay to avoid rate limiting on deployment**
-    setTimeout(() => {
-        checkForNewDonation();
-        intervalId = setInterval(checkForNewDonation, checkInterval);
-    }, 5000); // Wait 5 seconds before the first check
+    checkForNewDonation();
+    intervalId = setInterval(checkForNewDonation, checkInterval);
   </script>
 </body>
 </html>
