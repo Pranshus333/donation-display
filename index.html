@@ -1,354 +1,330 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BuckeyeThon Live Donation Display</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
-  
-  <style>
-    /* CORE STYLING - Hardcoded colors for stability */
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuckeyeThon Live Donation Display</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* OSU Colors for reference: Scarlet #bb0000, Gray #666666, White #ffffff, Black #000000 */
 
-    body {
-      /* Background and font-family set inline on <body> tag */
-      background-size: 400% 400%;
-      animation: gradientShift 15s ease infinite;
-      color: #ffffff; /* White */
-      text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
-      box-sizing: border-box;
-    }
+        body {
+            /* Use hardcoded gradient and font directly for max stability */
+            background: linear-gradient(135deg, #bb0000 0%, #800000 50%, #666666 100%);
+            
+            /* CRITICAL: Centering the entire page content */
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            height: 100vh;
+            margin: 0;
+            
+            /* Apply the font (Oswald) and default text color */
+            font-family: 'Oswald', sans-serif;
+            color: #ffffff;
+            text-align: center;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
 
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+        /* --- Main Content Container --- */
+        #container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+        }
 
-    /* --- Main Content Container --- */
-    #container {
-      position: relative;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 15px;
-    }
+        /* --- Logo Display --- */
+        #logo-container {
+            width: 200px;
+            height: 200px;
+            background: #ffffff; /* White */
+            border: 5px solid #bb0000; /* OSU Scarlet */
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 0 10px #bb0000;
+            padding: 15px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            overflow: hidden; 
+        }
 
-    /* --- Logo Display --- */
-    #logo-container {
-      width: 200px;
-      height: 200px;
-      background: #ffffff; /* White */
-      border: 5px solid #bb0000; /* OSU Scarlet */
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 0 10px #bb0000;
-      padding: 15px;
-      box-sizing: border-box;
-      margin-bottom: 20px;
-      overflow: hidden; 
-    }
+        #logo-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+        }
 
-    #logo-placeholder {
-        width: 100%;
-        height: 100%;
-        display: flex; 
-        align-items: center;
-        justify-content: center;
-    }
+        #logo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; 
+        }
 
-    #logo-placeholder img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain; 
-    }
+        /* --- Donor Name Display --- */
+        #donor-name {
+            font-size: 3.5vw;
+            font-weight: 700;
+            color: #ffffff; /* White */
+            text-shadow: 0 0 10px #bb0000; /* OSU Scarlet */
+            letter-spacing: 0.05em;
+            min-height: 1em;
+        }
 
-    /* --- Donor Name Display --- */
-    #donor-name {
-      font-size: 3.5vw;
-      font-weight: 700;
-      color: #ffffff; /* White */
-      text-shadow: 0 0 10px #bb0000; /* OSU Scarlet */
-      letter-spacing: 0.05em;
-      min-height: 1em;
-    }
+        /* --- Donation Amount --- */
+        #amount {
+            font-size: 8vw;
+            font-weight: 700;
+            color: #ffffff; /* White */
+            text-shadow: 0 0 20px #bb0000, 0 0 10px #000000; /* Scarlet, Black */
+            transition: transform 0.2s ease-out;
+            letter-spacing: 0.08em;
+            line-height: 1;
+        }
 
-    /* --- Donation Amount --- */
-    #amount {
-      font-size: 8vw;
-      font-weight: 700;
-      color: #ffffff; /* White */
-      text-shadow: 0 0 20px #bb0000, 0 0 10px #000000; /* Scarlet, Black */
-      transition: transform 0.2s ease-out;
-      letter-spacing: 0.08em;
-      line-height: 1;
-    }
+        #amount.highlight {
+            transform: scale(1.15) rotate(2deg);
+        }
 
-    #amount.highlight {
-      transform: scale(1.15) rotate(2deg);
-    }
-
-    /* --- Confetti --- */
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 100;
-    }
-  </style>
+        /* --- Confetti --- */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+    </style>
 </head>
-<body style="background: linear-gradient(135deg, #bb0000 0%, #800000 50%, #666666 100%); font-family: 'Oswald', sans-serif;">
-  
-    <div id="corner-images">
-    </div>
+<body>
+    
+    <div id="corner-images">
+    </div>
 
-  <div id="container">
-    <div id="logo-container">
-      <div id="logo-placeholder">
-        <img src="./buckeyethon_logo.jpg" alt="BuckeyeThon Main Logo">
-        </div>
-    </div>
-    
-    <div id="tagline" style="display:none;"></div>
-    
-    <div id="donor-name">Watching for Donations...</div>
+    <div id="container">
+        <div id="logo-container">
+            <div id="logo-placeholder">
+                <img src="./buckeyethon_logo.jpg" alt="BuckeyeThon Main Logo">
+            </div>
+        </div>
+        
+        <div id="tagline" style="display:none;"></div>
+        
+        <div id="donor-name">Watching for Donations...</div>
 
-    <div id="amount">$0.00</div>
-  </div>
-  
-  <canvas id="confetti-canvas"></canvas>
+        <div id="amount">$0.00</div>
+    </div>
+    
+    <canvas id="confetti-canvas"></canvas>
 
-  <script>
-    // --- Tracking the latest time instead of ID for robust multi-donation handling ---
-    const API_URL = "https://events.dancemarathon.com/api/events/6631/donations?limit=10";
-    let lastDonationTime = null; 
-    let isFirstLoad = true;
-    // **SAFE INTERVAL:** Set a 2-minute default to prevent overuse of hosting resources
-    let checkInterval = 120000; 
-    let intervalId = null;
-    let isRateLimited = false;
-    let failedAttempts = 0;
+    <script>
+        // --- Tracking and API Logic ---
+        const API_URL = "https://events.dancemarathon.com/api/events/6631/donations?limit=10";
+        let lastDonationTime = null; 
+        let isFirstLoad = true;
+        let checkInterval = 120000; // 2 minutes 
+        let intervalId = null;
+        let isRateLimited = false;
+        let failedAttempts = 0;
 
-    function log(msg) {
-      console.log(`[${new Date().toLocaleTimeString()}] ${msg}`);
-    }
+        function log(msg) {
+            console.log(`[${new Date().toLocaleTimeString()}] ${msg}`);
+        }
 
-    function setCheckInterval(newInterval) {
-      checkInterval = newInterval;
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-      intervalId = setInterval(checkForNewDonation, checkInterval);
-      log(`Poll interval set to ${checkInterval/1000}s`);
-    }
+        function setCheckInterval(newInterval) {
+            checkInterval = newInterval;
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+            intervalId = setInterval(checkForNewDonation, checkInterval);
+            log(`Poll interval set to ${checkInterval/1000}s`);
+        }
 
-    async function checkForNewDonation() {
-      try {
-        log("Checking API...");
-        const res = await fetch(API_URL, { 
-          method: 'GET',
-          cache: 'no-store',
-          headers: { 
-            'Accept': 'application/json'
-          }
-        });
-        
-        if (!res.ok) {
-          const text = await res.text();
-          if (text.includes("Rate Limit Exceeded") || res.status === 429) {
-            if (!isRateLimited) {
-              isRateLimited = true;
-              log("Rate limited - slowing down");
-              // Use a very long backoff (5 minutes) if rate limited
-              setCheckInterval(300000); 
-            }
-            return;
-          }
-          log(`HTTP ${res.status}: ${res.statusText}`);
-          return;
-        }
+        async function checkForNewDonation() {
+            try {
+                log("Checking API...");
+                const res = await fetch(API_URL, { 
+                    method: 'GET',
+                    cache: 'no-store',
+                    headers: { 
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!res.ok) {
+                    const text = await res.text();
+                    if (text.includes("Rate Limit Exceeded") || res.status === 429) {
+                        if (!isRateLimited) {
+                            isRateLimited = true;
+                            log("Rate limited - slowing down");
+                            setCheckInterval(300000); // 5 minutes 
+                        }
+                        return;
+                    }
+                    log(`HTTP ${res.status}: ${res.statusText}`);
+                    return;
+                }
 
-        if (isRateLimited) {
-          isRateLimited = false;
-          log("Rate limit cleared");
-          // Reset to the 2-minute safe interval
-          setCheckInterval(120000); 
-        }
-        
-        failedAttempts = 0;
+                if (isRateLimited) {
+                    isRateLimited = false;
+                    log("Rate limit cleared");
+                    setCheckInterval(120000); // Reset to 2 minutes
+                }
+                
+                failedAttempts = 0;
+                const donations = await res.json();
+                
+                let newDonations = [];
+                let newestTime = lastDonationTime;
 
-        const donations = await res.json();
-        log(`Got ${donations.length} donations`);
+                for (let i = donations.length - 1; i >= 0; i--) {
+                    const donation = donations[i];
+                    const donationTime = new Date(donation.createdDateUTC).getTime();
+                    
+                    if (!lastDonationTime || donationTime > lastDonationTime) {
+                        newDonations.push(donation);
+                    }
+                    
+                    if (!newestTime || donationTime > newestTime) {
+                        newestTime = donationTime;
+                    }
+                }
+                
+                if (isFirstLoad) {
+                    lastDonationTime = newestTime;
+                    isFirstLoad = false;
+                    log("Initialized - watching for new donations");
+                    return;
+                }
+                
+                if (newDonations.length > 0) {
+                    log(`Found ${newDonations.length} NEW DONATION(S)!`);
+                    newDonations.forEach((donation, index) => {
+                        const recipientName = donation.recipientName || 'A BuckeyeThon Participant';
+                        const amount = donation.amount;
+                        setTimeout(() => {
+                            log(`ALERT: ${amount} for ${recipientName}`);
+                            showDonation(amount, recipientName); 
+                        }, index * 3000);
+                    });
+                    lastDonationTime = newestTime;
+                }
+            } catch (err) {
+                failedAttempts++;
+                log(`Error: ${err.message}`);
+                if (failedAttempts >= 3) {
+                    log("Multiple failures - extending wait to 60s");
+                    setCheckInterval(60000);
+                }
+                console.error("Full error:", err);
+            }
+        }
 
-        if (!Array.isArray(donations) || donations.length === 0) {
-          return;
-        }
+        function showDonation(amount, recipientName) {
+            const amountEl = document.getElementById("amount");
+            const donorEl = document.getElementById("donor-name");
+            donorEl.textContent = `For ${recipientName}:`;
+            amountEl.textContent = `$${amount.toFixed(2)}`;
+            amountEl.classList.add("highlight"); 
+            setTimeout(() => {
+                amountEl.classList.remove("highlight");
+            }, 400);
+            startConfetti();
+            setTimeout(stopConfetti, 5000);
+        }
 
-        // --- MULTI-DONATION LOGIC (Unchanged) ---
-        let newDonations = [];
-        let newestTime = lastDonationTime;
+        // --- Confetti Animation (Complete and Corrected) ---
+        const canvas = document.getElementById("confetti-canvas");
+        const ctx = canvas.getContext("2d");
+        let confetti = [];
+        let confettiInterval;
 
-        for (let i = donations.length - 1; i >= 0; i--) {
-            const donation = donations[i];
-            const donationTime = new Date(donation.createdDateUTC).getTime();
-           
-            if (!lastDonationTime || donationTime > lastDonationTime) {
-                newDonations.push(donation);
-            }
-           
-            if (!newestTime || donationTime > newestTime) {
-                newestTime = donationTime;
-            }
-        }
-        
-        if (isFirstLoad) {
-            lastDonationTime = newestTime;
-            isFirstLoad = false;
-            log("Initialized - watching for new donations");
-            return;
-        }
-        
-        if (newDonations.length > 0) {
-            log(`Found ${newDonations.length} NEW DONATION(S)!`);
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
 
-            newDonations.forEach((donation, index) => {
-                const recipientName = donation.recipientName || 'A BuckeyeThon Participant';
-                const amount = donation.amount;
-                
-                setTimeout(() => {
-                    log(`ALERT: ${amount} for ${recipientName}`);
-                    showDonation(amount, recipientName); 
-                }, index * 3000);
-            });
-            
-            lastDonationTime = newestTime;
-        }
-      } catch (err) {
-        failedAttempts++;
-        log(`Error: ${err.message}`);
-        
-        if (failedAttempts >= 3) {
-          log("Multiple failures - extending wait to 60s");
-          setCheckInterval(60000);
-        }
-        
-        console.error("Full error:", err);
-      }
-    }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
 
-    function showDonation(amount, recipientName) {
-      const amountEl = document.getElementById("amount");
-      const donorEl = document.getElementById("donor-name");
+        function startConfetti() {
+            confetti = [];
+            for (let i = 0; i < 200; i++) {
+                confetti.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    r: Math.random() * 6 + 4,
+                    d: Math.random() * 10 + 5,
+                    color: randomColor(),
+                    tilt: Math.random() * 10 - 10
+                });
+            }
+            clearInterval(confettiInterval);
+            confettiInterval = setInterval(drawConfetti, 20);
+        }
 
-      donorEl.textContent = `For ${recipientName}:`;
+        function stopConfetti() {
+            clearInterval(confettiInterval);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
 
-      amountEl.textContent = `$${amount.toFixed(2)}`;
-      amountEl.classList.add("highlight"); 
-      
-      setTimeout(() => {
-        amountEl.classList.remove("highlight");
-      }, 400);
+        function drawConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            confetti.forEach((c) => {
+                ctx.beginPath();
+                ctx.fillStyle = c.color;
+                ctx.fillRect(c.x + c.tilt, c.y, c.r, c.r);
+                ctx.fill();
+            });
+            updateConfetti();
+        }
+        
+        function updateConfetti() {
+            for (let i = 0; i < confetti.length; i++) {
+                const c = confetti[i];
+                c.y += Math.random() * 3 + 2;
+                c.x += Math.sin(c.d);
+                if (c.y > canvas.height) {
+                    confetti[i] = {
+                        x: Math.random() * canvas.width,
+                        y: -10,
+                        r: c.r,
+                        d: c.d,
+                        color: c.color,
+                        tilt: c.tilt
+                    };
+                }
+            }
+        }
 
-      startConfetti();
-      setTimeout(stopConfetti, 5000);
-    }
+        function randomColor() {
+            const colors = ["#bb0000", "#ffffff", "#666666"]; 
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
 
-    // --- Confetti Animation ---
-    const canvas = document.getElementById("confetti-canvas");
-    const ctx = canvas.getContext("2d");
-    let confetti = [];
-    let confettiInterval;
+        // Initialize
+        log("Starting donation monitor...");
+        log(`Checking every ${checkInterval/1000} seconds`);
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
-
-    function startConfetti() {
-      confetti = [];
-      for (let i = 0; i < 200; i++) {
-        confetti.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height - canvas.height,
-          r: Math.random() * 6 + 4,
-          d: Math.random() * 10 + 5,
-          color: randomColor(),
-          tilt: Math.random() * 10 - 10
-        });
-      }
-      clearInterval(confettiInterval);
-      confettiInterval = setInterval(drawConfetti, 20);
-    }
-
-    function stopConfetti() {
-      clearInterval(confettiInterval);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-
-    function drawConfetti() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      confetti.forEach((c) => {
-        ctx.beginPath();
-        ctx.fillStyle = c.color;
-        ctx.fillRect(c.x + c.tilt, c.y, c.r, c.r);
-        ctx.fill();
-      });
-      updateConfetti();
-    }
-    
-    function updateConfetti() {
-      for (let i = 0; i < confetti.length; i++) {
-        const c = confetti[i];
-        c.y += Math.random() * 3 + 2;
-        c.x += Math.sin(c.d);
-        if (c.y > canvas.height) {
-          confetti[i] = {
-            x: Math.random() * canvas.width,
-            y: -10,
-            r: c.r,
-            d: c.d,
-            color: c.color,
-            tilt: c.tilt
-          };
-        }
-      }
-    }
-
-    function randomColor() {
-      // BuckeyeThon's colors: Scarlet (#bb0000), White (#ffffff), Gray/Black (#666666)
-      const colors = ["#bb0000", "#ffffff", "#666666"]; 
-      return colors[Math.floor(Math.random() * colors.length)];
-    }
-
-    // Initialize
-    log("Starting donation monitor...");
-    log(`Checking every ${checkInterval/1000} seconds`);
-
-    // Add 5-second delay to avoid rate limiting on deployment
-    setTimeout(() => {
-        checkForNewDonation();
-        intervalId = setInterval(checkForNewDonation, checkInterval);
-    }, 5000); 
-  </script>
+        setTimeout(() => {
+            checkForNewDonation();
+            intervalId = setInterval(checkForNewDonation, checkInterval);
+        }, 5000); 
+    </script>
 </body>
 </html>
