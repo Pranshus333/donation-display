@@ -17,13 +17,13 @@
       --font-main: 'Oswald', sans-serif; /* A strong, bold font */
     }
 
+    /* NOTE: We removed the background and font-family from the body rule below,
+        as they are now set inline on the <body> tag for reliability. */
     body {
-      /* Deep Scarlet to Dark Gray gradient - more OSU-themed */
-      background: linear-gradient(135deg, var(--osu-scarlet) 0%, #800000 50%, var(--osu-gray) 100%);
+      /* The rest of the styling remains to center content */
       background-size: 400% 400%;
       animation: gradientShift 15s ease infinite;
       color: var(--white);
-      font-family: var(--font-main);
       text-align: center;
       display: flex;
       justify-content: center;
@@ -157,7 +157,7 @@
     }
   </style>
 </head>
-<body>
+<body style="background: linear-gradient(135deg, #bb0000 0%, #800000 50%, #666666 100%); font-family: 'Oswald', sans-serif;">
   
   <div id="floating-elements">
     <div class="buckeye-leaf leaf-1">$</div>
