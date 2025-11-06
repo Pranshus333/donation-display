@@ -11,8 +11,10 @@
         /* OSU Colors for reference: Scarlet #bb0000, Gray #666666, White #ffffff, Black #000000 */
 
         body {
-            /* Use hardcoded gradient and font directly for max stability */
-            background: linear-gradient(135deg, #bb0000 0%, #800000 50%, #666666 100%);
+            /* * FIX: Replaced the gradient to remove the gray (#666666) color stop. 
+             * Now uses a gradient from Scarlet (#bb0000) to a darker red (#800000).
+             */
+            background: linear-gradient(135deg, #bb0000 0%, #a00000 50%, #800000 100%);
             
             /* CRITICAL: Centering the entire page content */
             display: flex;
@@ -313,7 +315,8 @@
         }
 
         function randomColor() {
-            const colors = ["#bb0000", "#ffffff", "#666666"]; 
+            // Updated confetti to only use red and white for the confetti pieces themselves
+            const colors = ["#bb0000", "#ffffff"]; 
             return colors[Math.floor(Math.random() * colors.length)];
         }
 
