@@ -238,7 +238,7 @@
         function showDonation(amount, recipientName) {
             const amountEl = document.getElementById("amount");
             const donorEl = document.getElementById("donor-name");
-            donorEl.textContent = `For ${recipientName}:`;
+            donorEl.textContent = `${recipientName} received:`;
             amountEl.textContent = `$${amount.toFixed(2)}`;
             amountEl.classList.add("highlight"); 
             setTimeout(() => {
