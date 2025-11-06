@@ -120,7 +120,7 @@
       object-fit: contain; 
     }
 
-    /* --- Donor Name Display --- */
+    /* --- Donor Name Display (Now Recipient Name) --- */
     #donor-name {
       font-size: 3.5vw; /* Adjusted for visibility */
       font-weight: 700;
@@ -187,7 +187,7 @@
   <canvas id="confetti-canvas"></canvas>
 
   <script>
-    // --- Tracking the latest time instead of ID ---
+    // --- Tracking the latest time instead of ID for robust multi-donation handling ---
     const API_URL = "https://events.dancemarathon.com/api/events/6631/donations?limit=10";
     let lastDonationTime = null; // **CHANGED: Now tracking time**
     let isFirstLoad = true;
@@ -226,7 +226,7 @@
             if (!isRateLimited) {
               isRateLimited = true;
               log("Rate limited - slowing down");
-              setCheckInterval(30000);
+              setCheckInterval(120000); // Wait 2 minutes if rate limited
             }
             return;
           }
@@ -237,7 +237,7 @@
         if (isRateLimited) {
           isRateLimited = false;
           log("Rate limit cleared");
-          setCheckInterval(30000);
+          setCheckInterval(30000); // Reset to base 30 seconds
         }
         
         failedAttempts = 0;
@@ -249,11 +249,11 @@
           return;
         }
 
-        // --- NEW MULTI-DONATION LOGIC ---
+        // --- MULTI-DONATION LOGIC ---
         let newDonations = [];
         let newestTime = lastDonationTime;
 
-        // Iterate backward to process oldest-newest donations in order
+        // 1. Iterate backward to process oldest-newest donations in order
         for (let i = donations.length - 1; i >= 0; i--) {
             const donation = donations[i];
             // Convert the UTC string to a number (milliseconds since epoch)
@@ -270,6 +270,7 @@
             }
         }
         
+        // 2. Handle first load and bail
         if (isFirstLoad) {
             lastDonationTime = newestTime;
             isFirstLoad = false;
@@ -277,13 +278,13 @@
             return;
         }
         
-        // Process all new donations found
+        // 3. Process all new donations found
         if (newDonations.length > 0) {
             log(`Found ${newDonations.length} NEW DONATION(S)!`);
 
             // Use a short delay between alerts for multiple simultaneous donations
             newDonations.forEach((donation, index) => {
-                // Recipient display logic carried over from previous change
+                // Recipient display logic
                 const recipientName = donation.recipientName || 'A BuckeyeThon Participant';
                 const amount = donation.amount;
                 
@@ -293,7 +294,7 @@
                 }, index * 3000); // 3-second delay ensures each donation gets a full screen moment
             });
             
-            // Update the tracker time
+            // 4. Update the tracker time only after all new donations have been handled
             lastDonationTime = newestTime;
         }
         // --- END NEW LOGIC ---
@@ -311,7 +312,7 @@
       }
     }
 
-    // Function to display a donation (Recipient display logic is retained)
+    // Function to display a donation
     function showDonation(amount, recipientName) {
       const amountEl = document.getElementById("amount");
       const donorEl = document.getElementById("donor-name");
@@ -404,8 +405,12 @@
     // Initialize
     log("Starting donation monitor...");
     log(`Checking every ${checkInterval/1000} seconds`);
-    checkForNewDonation();
-    intervalId = setInterval(checkForNewDonation, checkInterval);
+
+    // **FINAL CHANGE: Add 5-second delay to avoid rate limiting on deployment**
+    setTimeout(() => {
+        checkForNewDonation();
+        intervalId = setInterval(checkForNewDonation, checkInterval);
+    }, 5000); // Wait 5 seconds before the first check
   </script>
 </body>
 </html>
